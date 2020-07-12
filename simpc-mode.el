@@ -25,22 +25,31 @@
   (- (length line)
      (length (string-trim-left line))))
 
+(defun simpc--previous-non-empty-line ()
+  (save-excursion
+    (forward-line -1)
+    (while (and (not (bobp))
+                (string-empty-p
+                 (string-trim-right
+                  (thing-at-point 'line t))))
+      (forward-line -1))
+    (thing-at-point 'line t)))
+
+;;; TODO: no support for if-while-etc blocks without curly braces
 (defun simpc-indent-line ()
   (interactive)
   (beginning-of-line)
   (when (not (bobp))
     (indent-line-to
-     (save-excursion
-       (let ((cur-line (string-trim-right (thing-at-point 'line t))))
-         (forward-line -1)
-         (let ((prev-line (string-trim-right (thing-at-point 'line t))))
-           (if (string-suffix-p "{" prev-line)
-               (if (string-prefix-p "}" (string-trim-left cur-line))
-                   (simpc--space-prefix-len prev-line)
-                 (+ (simpc--space-prefix-len prev-line) 4))
-             (if (string-prefix-p "}" (string-trim-left cur-line))
-                 (max (- (simpc--space-prefix-len prev-line) 4) 0)
-               (simpc--space-prefix-len prev-line)))))))))
+     (let ((cur-line (string-trim-right (thing-at-point 'line t)))
+           (prev-line (string-trim-right (simpc--previous-non-empty-line))))
+       (if (string-suffix-p "{" prev-line)
+           (if (string-prefix-p "}" (string-trim-left cur-line))
+               (simpc--space-prefix-len prev-line)
+             (+ (simpc--space-prefix-len prev-line) 4))
+         (if (string-prefix-p "}" (string-trim-left cur-line))
+             (max (- (simpc--space-prefix-len prev-line) 4) 0)
+           (simpc--space-prefix-len prev-line)))))))
 
 (define-derived-mode simpc-mode prog-mode "Simple C"
   "Simple major mode for editing C files."
