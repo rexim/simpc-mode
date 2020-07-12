@@ -21,20 +21,26 @@
    `("#\\(.*\\)" . font-lock-preprocessor-face)
    `(,(regexp-opt (simpc-keywords)) . font-lock-keyword-face)))
 
-(defun simpc-curly-nested-level ()
-  (let ((level 0))
-    (save-excursion
-      (while (not (bobp))
-        (cond
-         ((= (following-char) ?{) (setq level (1+ level))))
-        (forward-char -1)))
-    level))
+(defun simpc--space-prefix-len (line)
+  (- (length line)
+     (length (string-trim-left line))))
 
 (defun simpc-indent-line ()
   (interactive)
   (beginning-of-line)
-  (let ((cur-indent 0))
-    (indent-line-to (* 4 (simpc-curly-nested-level)))))
+  (when (not (bobp))
+    (indent-line-to
+     (save-excursion
+       (let ((cur-line (string-trim-right (thing-at-point 'line t))))
+         (forward-line -1)
+         (let ((prev-line (string-trim-right (thing-at-point 'line t))))
+           (if (string-suffix-p "{" prev-line)
+               (if (string-prefix-p "}" (string-trim-left cur-line))
+                   (simpc--space-prefix-len prev-line)
+                 (+ (simpc--space-prefix-len prev-line) 4))
+             (if (string-prefix-p "}" (string-trim-left cur-line))
+                 (max (- (simpc--space-prefix-len prev-line) 4) 0)
+               (simpc--space-prefix-len prev-line)))))))))
 
 (define-derived-mode simpc-mode prog-mode "Simple C"
   "Simple major mode for editing C files."
