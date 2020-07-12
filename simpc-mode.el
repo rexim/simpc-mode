@@ -18,7 +18,14 @@
 
 (defun simpc-font-lock-keywords ()
   (list
+   ;; TODO: file paths are not highlighted as strings in #include preprocessor directives
+   ;;     #include <stdio.h>
+   ;;     #include "foo.c"
+   ;; TODO: string in #ifdef breaks preprocessor highlighting
+   ;;     #ifdef ""
    `("#\\(.*\\)" . font-lock-preprocessor-face)
+   ;; TODO: keywords are highlighted even when they are substrings of a var name
+   ;;     int int_n = 69;
    `(,(regexp-opt (simpc-keywords)) . font-lock-keyword-face)))
 
 (defun simpc--space-prefix-len (line)
@@ -36,6 +43,10 @@
     (thing-at-point 'line t)))
 
 ;;; TODO: no support for if-while-etc blocks without curly braces
+;;;     if (...)
+;;;        foo();
+;;;     else
+;;;        bar();
 (defun simpc-indent-line ()
   (interactive)
   (beginning-of-line)
