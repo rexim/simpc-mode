@@ -20,12 +20,10 @@
 
 (defun simpc-font-lock-keywords ()
   (list
-   ;; TODO: file paths are not highlighted as strings in #include preprocessor directives
-   ;;     #include <stdio.h>
-   ;;     #include "foo.c"
    ;; TODO: string in #ifdef breaks preprocessor highlighting
    ;;     #ifdef ""
-   `("#\\(.*\\)" . font-lock-preprocessor-face)
+   `("# *[a-zA-Z0-9_]+" . font-lock-preprocessor-face)
+   `("#.*include \\(\\(<\\|\"\\).*\\(<\\|\"\\)?\\)" . (1 font-lock-string-face))
    `(,(regexp-opt (simpc-keywords) 'symbols) . font-lock-keyword-face)))
 
 (defun simpc--space-prefix-len (line)
