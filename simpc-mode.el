@@ -1,3 +1,5 @@
+(require 'subr-x)
+
 (defvar simpc-mode-syntax-table
   (let ((table (make-syntax-table)))
     ;; C/C++ style comments
@@ -24,9 +26,7 @@
    ;; TODO: string in #ifdef breaks preprocessor highlighting
    ;;     #ifdef ""
    `("#\\(.*\\)" . font-lock-preprocessor-face)
-   ;; TODO: keywords are highlighted even when they are substrings of a var name
-   ;;     int int_n = 69;
-   `(,(regexp-opt (simpc-keywords)) . font-lock-keyword-face)))
+   `(,(regexp-opt (simpc-keywords) 'symbols) . font-lock-keyword-face)))
 
 (defun simpc--space-prefix-len (line)
   (- (length line)
