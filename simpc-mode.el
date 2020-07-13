@@ -52,6 +52,7 @@
           (string-prefix-p "if(" (string-trim-left prev-line))
           (string-prefix-p "while " (string-trim-left prev-line))
           (string-prefix-p "while(" (string-trim-left prev-line))
+          (string-prefix-p "case " (string-trim-left prev-line))
           (string= "else" (string-trim prev-line)))
       (+ (simpc--space-prefix-len prev-line) indent-len))
      ((or (string-prefix-p "}" (string-trim-left cur-line))
