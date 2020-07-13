@@ -60,15 +60,20 @@
       (max (- (simpc--space-prefix-len prev-line) indent-len) 0))
      (t (simpc--space-prefix-len prev-line)))))
 
+;;; TODO: introduce indentation testing
 ;;; TODO: wrong non-curly brace construction indentation
+;;; ------------------------------
 ;;;    if ()
 ;;;        f();
 ;;;    else
 ;;;        g();
 ;;;        t();   // <---
-;;;
+;;; ------------------------------
 ;;;    while()
 ;;;        f();
+;;;        g();   // <---
+;;; ------------------------------
+;;;    if (...) f();
 ;;;        g();   // <---
 ;;; TODO: case body inside of switch is not indented properly
 ;;; TODO: indentation does not take into account parens `(` and `)`
