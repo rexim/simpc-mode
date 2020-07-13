@@ -46,6 +46,7 @@
 ;;;     else
 ;;;        bar();
 ;;; TODO: simpc-indent-line should keep the cursor at the old relative position
+;;; TODO: indentation does not take into account parens `(` and `)`
 (defun simpc-indent-line ()
   (interactive)
   (beginning-of-line)
