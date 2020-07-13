@@ -20,8 +20,8 @@
 
 (defun simpc-font-lock-keywords ()
   (list
-   ;; TODO: string in #ifdef breaks preprocessor highlighting
-   ;;     #ifdef ""
+   ;; TODO: comment in include breaks preprocessor highlighting
+   ;;     #include <stdio.h>            // include standard input/output
    `("# *[a-zA-Z0-9_]+" . font-lock-preprocessor-face)
    `("#.*include \\(\\(<\\|\"\\).*\\(<\\|\"\\)?\\)" . (1 font-lock-string-face))
    `(,(regexp-opt (simpc-keywords) 'symbols) . font-lock-keyword-face)))
@@ -45,6 +45,7 @@
 ;;;        foo();
 ;;;     else
 ;;;        bar();
+;;; TODO: simpc-indent-line should keep the cursor at the old relative position
 (defun simpc-indent-line ()
   (interactive)
   (beginning-of-line)
