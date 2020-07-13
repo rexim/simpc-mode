@@ -38,11 +38,17 @@
       (forward-line -1))
     (thing-at-point 'line t)))
 
-;;; TODO: no support for if-while-etc blocks without curly braces
-;;;     if (...)
-;;;        foo();
-;;;     else
-;;;        bar();
+;;; TODO: wrong non-curly brace construction indentation
+;;;    if ()
+;;;        f();
+;;;    else
+;;;        g();
+;;;        t();   // <---
+;;;
+;;;    while()
+;;;        f();
+;;;        g();   // <---
+;;; TODO: case body inside of switch is not indented properly
 ;;; TODO: simpc-indent-line should keep the cursor at the old relative position
 ;;; TODO: indentation does not take into account parens `(` and `)`
 ;;; TODO: customizable indentation (amount of spaces, tabs, etc)
@@ -52,14 +58,23 @@
   (when (not (bobp))
     (indent-line-to
      (let ((cur-line (string-trim-right (thing-at-point 'line t)))
-           (prev-line (string-trim-right (simpc--previous-non-empty-line))))
-       (if (string-suffix-p "{" prev-line)
-           (if (string-prefix-p "}" (string-trim-left cur-line))
-               (simpc--space-prefix-len prev-line)
-             (+ (simpc--space-prefix-len prev-line) 4))
-         (if (string-prefix-p "}" (string-trim-left cur-line))
-             (max (- (simpc--space-prefix-len prev-line) 4) 0)
-           (simpc--space-prefix-len prev-line)))))))
+           (prev-line (string-trim-right (simpc--previous-non-empty-line)))
+           (indent-len 4))
+       (cond
+        ((and (string-suffix-p "{" prev-line)
+              (string-prefix-p "}" (string-trim-left cur-line)))
+         (simpc--space-prefix-len prev-line))
+        ((or (string-suffix-p "{" prev-line)
+             (string-prefix-p "if " (string-trim-left prev-line))
+             (string-prefix-p "if(" (string-trim-left prev-line))
+             (string-prefix-p "while " (string-trim-left prev-line))
+             (string-prefix-p "while(" (string-trim-left prev-line))
+             (string= "else" (string-trim prev-line)))
+         (+ (simpc--space-prefix-len prev-line) indent-len))
+        ((or (string-prefix-p "}" (string-trim-left cur-line))
+             (string= "else" (string-trim cur-line)))
+         (max (- (simpc--space-prefix-len prev-line) indent-len) 0))
+        (t (simpc--space-prefix-len prev-line)))))))
 
 (define-derived-mode simpc-mode prog-mode "Simple C"
   "Simple major mode for editing C files."
