@@ -60,36 +60,12 @@
      ((and (string-suffix-p "{" prev-line)
            (string-prefix-p "}" (string-trim-left cur-line)))
       (simpc--space-prefix-len prev-line))
-     ((or (string-suffix-p "{" prev-line)
-          (string-prefix-p "if " (string-trim-left prev-line))
-          (string-prefix-p "if(" (string-trim-left prev-line))
-          (string-prefix-p "while " (string-trim-left prev-line))
-          (string-prefix-p "while(" (string-trim-left prev-line))
-          (string-prefix-p "case " (string-trim-left prev-line))
-          (string= "else" (string-trim prev-line)))
+     ((string-suffix-p "{" prev-line)
       (+ (simpc--space-prefix-len prev-line) indent-len))
-     ((or (string-prefix-p "}" (string-trim-left cur-line))
-          (string= "else" (string-trim cur-line)))
+     ((string-prefix-p "}" (string-trim-left cur-line))
       (max (- (simpc--space-prefix-len prev-line) indent-len) 0))
      (t (simpc--space-prefix-len prev-line)))))
 
-;;; TODO: introduce indentation testing
-;;; TODO: wrong non-curly brace construction indentation
-;;; ------------------------------
-;;;    if ()
-;;;        f();
-;;;    else
-;;;        g();
-;;;        t();   // <---
-;;; ------------------------------
-;;;    while()
-;;;        f();
-;;;        g();   // <---
-;;; ------------------------------
-;;;    if (...) f();
-;;;        g();   // <---
-;;; TODO: case body inside of switch is not indented properly
-;;; TODO: indentation does not take into account parens `(` and `)`
 ;;; TODO: customizable indentation (amount of spaces, tabs, etc)
 (defun simpc-indent-line ()
   (interactive)
