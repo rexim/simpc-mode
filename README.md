@@ -23,3 +23,33 @@ Right now the only way to use this is to
 1. `C-x C-f simpc-mode.el RET`
 2. `M-x eval-buffer RET`
 3. `M-x simpc-mode RET`
+
+## Indentation
+
+Right now the mode supports very simple indentations based on
+analysing the previous non-empty line and its surrounding curly
+braces. Anything more complicated is outside of the scope of the
+project.
+
+It is recommended to use an external formatter such as
+[indent](https://www.gnu.org/software/indent/),
+[astyle](http://astyle.sourceforge.net/),
+[clang-format](https://clang.llvm.org/docs/ClangFormat.html), etc.
+
+Here is how I use [astyle](http://astyle.sourceforge.net/):
+
+```emacs-lisp
+(defun astyle-buffer ()
+  (interactive)
+  (let ((saved-line-number (line-number-at-pos)))
+    (shell-command-on-region
+     (point-min)
+     (point-max)
+     "astyle --style=kr"
+     nil
+     t)
+    (goto-line saved-line-number)))
+```
+
+Then I bind `astyle-buffer` to some key combination and invoke it
+periodically to reformat the whole current buffer.
