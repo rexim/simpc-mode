@@ -10,6 +10,10 @@
     (modify-syntax-entry ?# "." table)
     ;; Chars are the same as strings
     (modify-syntax-entry ?' "\"" table)
+    ;; Treat <> as punctuation (needed to highlight C++ keywords
+    ;; properly in template syntax)
+    (modify-syntax-entry ?< "." table)
+    (modify-syntax-entry ?> "." table)
     table))
 
 (defun simpc-keywords ()
