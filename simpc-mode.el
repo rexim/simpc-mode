@@ -14,6 +14,9 @@
     ;; properly in template syntax)
     (modify-syntax-entry ?< "." table)
     (modify-syntax-entry ?> "." table)
+
+    (modify-syntax-entry ?& "." table)
+    (modify-syntax-entry ?% "." table)
     table))
 
 (defun simpc-keywords ()
