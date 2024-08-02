@@ -4,7 +4,7 @@ Because whatever comes with Emacs is too slow.
 
 This mode does not try to be as featureful as `c-mode`, `c++-mode`,
 `cc-mode`, etc. Instead we are trying to implement a bare minimum
-syntax highlighting and indentation to maintain a high performance on
+syntax highlighting and indentation to maintain high performance on
 big files with long lines.
 
 The goal is to be able to comfortably browse and modify the following files:
@@ -18,7 +18,7 @@ handles such files! It's `c-mode` (and others) that cannot.
 
 ## Quick Start
 
-Right now the only way to use this is to
+Right now the only way to use this mode is to
 
 1. `C-x C-f simpc-mode.el RET`
 2. `M-x eval-buffer RET`
@@ -26,7 +26,7 @@ Right now the only way to use this is to
 
 ## Indentation
 
-Right now the mode supports very simple indentations based on
+Right now the mode supports only very simple indentations based on the
 analysing the previous non-empty line and its surrounding curly
 braces. Anything more complicated is outside of the scope of the
 project.
