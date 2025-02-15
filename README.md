@@ -17,15 +17,7 @@ Right now the only way to work with these files in Emacs is to use
 `text-mode`. Which is actually a good evidence that Emacs itself can
 handle such files! It's `c-mode` (and others) that cannot.
 
-## Quick Start
-
-Right now the only way to use this mode is to
-
-1. `C-x C-f simpc-mode.el RET`
-2. `M-x eval-buffer RET`
-3. `M-x simpc-mode RET`
-
-### Installing locally
+## Installing locally
 
 Put [simpc-mode.el](./simpc-mode.el) to some folder `/path/to/simpc/`. Add this to your `.emacs`:
 
