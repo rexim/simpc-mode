@@ -15,7 +15,7 @@ The goal is to be able to comfortably browse and modify the following files:
 
 Right now the only way to work with these files in Emacs is to use
 `text-mode`. Which is actually a good evidence that Emacs itself can
-handles such files! It's `c-mode` (and others) that cannot.
+handle such files! It's `c-mode` (and others) that cannot.
 
 ## Quick Start
 
