@@ -10,6 +10,7 @@ big files with long lines.
 The goal is to be able to comfortably browse and modify the following files:
 - [imgui](https://raw.githubusercontent.com/ocornut/imgui/fb7f6cab8c322731da336e553915e944bf386e62/imgui.h)
 - [amalgamated sqlite3.c](https://raw.githubusercontent.com/IreneKnapp/direct-sqlite/a74cc50c735053c7c49c487a66e7756b524db883/cbits/sqlite3.c)
+- [miniaudio.h](https://raw.githubusercontent.com/mackron/miniaudio/refs/heads/master/miniaudio.h)
 - ...
 
 Right now the only way to work with these files in Emacs is to use
