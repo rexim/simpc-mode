@@ -25,6 +25,19 @@ Right now the only way to use this mode is to
 2. `M-x eval-buffer RET`
 3. `M-x simpc-mode RET`
 
+### Installing locally
+
+Put [simpc-mode.el](./simpc-mode.el) to some folder `/path/to/simpc/`. Add this to your `.emacs`:
+
+```el
+;; Adding `/path/to/simpc` to load-path so `require` can find it
+(add-to-list 'load-path "/path/to/simpc/")
+;; Importing simpc-mode
+(require 'simpc-mode)
+;; Automatically enabling simpc-mode on files with extensions like .h, .c, .cpp, .hpp
+(add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . simpc-mode))
+```
+
 ## Indentation
 
 Right now the mode supports only very simple indentations based on the
