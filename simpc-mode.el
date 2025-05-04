@@ -24,7 +24,8 @@
     "char16_t" "char32_t" "char8_t"
     "int8_t" "uint8_t" "int16_t" "uint16_t" "int32_t" "uint32_t" "int64_t" "uint64_t"
     "uintptr_t"
-    "size_t"))
+    "size_t"
+    "va_list"))
 
 (defun simpc-keywords ()
   '("auto" "break" "case" "const" "continue" "default" "do"
@@ -34,7 +35,7 @@
     "and_eq" "asm" "atomic_cancel" "atomic_commit" "atomic_noexcept" "bitand"
     "bitor" "catch"  "class" "co_await"
     "co_return" "co_yield" "compl" "concept" "const_cast" "consteval" "constexpr"
-    "constinit" "decltype" "delete" "dynamic_cast" "explicit" "export" "false" 
+    "constinit" "decltype" "delete" "dynamic_cast" "explicit" "export" "false"
     "friend" "inline" "mutable" "namespace" "new" "noexcept" "not" "not_eq"
     "nullptr" "operator" "or" "or_eq" "private" "protected" "public" "reflexpr"
     "reinterpret_cast" "requires" "static_assert" "static_cast" "synchronized"
@@ -44,7 +45,9 @@
 (defun simpc-font-lock-keywords ()
   (list
    `("# *[#a-zA-Z0-9_]+" . font-lock-preprocessor-face)
-   `("#.*include \\(\\(<\\|\"\\).*\\(>\\|\"\\)\\)" . (1 font-lock-string-face))
+   `("# *include\\(?:_next\\)?\\s-+\\(\\(<\\|\"\\).*\\(>\\|\"\\)\\)" . (1 font-lock-string-face))
+   `("# *\\(warn\\|error\\)" . font-lock-warning-face)
+   `("\\(?:enum\\|struct\\)\\s-+\\([a-zA-Z0-9_]+\\)" . (1 font-lock-type-face))
    `(,(regexp-opt (simpc-keywords) 'symbols) . font-lock-keyword-face)
    `(,(regexp-opt (simpc-types) 'symbols) . font-lock-type-face)))
 
