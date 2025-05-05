@@ -44,9 +44,9 @@
 
 (defun simpc-font-lock-keywords ()
   (list
+   `("# *\\(warn\\|error\\)" . font-lock-warning-face)
    `("# *[#a-zA-Z0-9_]+" . font-lock-preprocessor-face)
    `("# *include\\(?:_next\\)?\\s-+\\(\\(<\\|\"\\).*\\(>\\|\"\\)\\)" . (1 font-lock-string-face))
-   `("# *\\(warn\\|error\\)" . font-lock-warning-face)
    `("\\(?:enum\\|struct\\)\\s-+\\([a-zA-Z0-9_]+\\)" . (1 font-lock-type-face))
    `(,(regexp-opt (simpc-keywords) 'symbols) . font-lock-keyword-face)
    `(,(regexp-opt (simpc-types) 'symbols) . font-lock-type-face)))
