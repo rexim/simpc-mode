@@ -52,47 +52,60 @@
    `(,(regexp-opt (simpc-types) 'symbols) . font-lock-type-face)))
 
 (defun simpc--previous-non-empty-line ()
+  "Returns either NIL when there is no such line or a pair (line . indentation)"
   (save-excursion
-    (forward-line -1)
-    (while (and (not (bobp))
-                (string-empty-p
-                 (string-trim-right
-                  (thing-at-point 'line t))))
-      (forward-line -1))
-    (thing-at-point 'line t)))
+    ;; If you are on the first line, but not at the beginning of buffer (BOB) the `(bobp)`
+    ;; function does not return `t`. So we have to move to the beginning of the line first.
+    ;; TODO: feel free to suggest a better approach for checking BOB here.
+    (move-beginning-of-line nil)
+    (if (bobp)
+        ;; If you are standing at the BOB, you by definition don't have a previous non-empty line.
+        nil
+      ;; Moving one line backwards because the current line is by definition is not
+      ;; the previous non-empty line.
+      (forward-line -1)
+      ;; Keep moving backwards until we hit BOB or a non-empty line.
+      (while (and (not (bobp))
+                  (string-empty-p
+                   (string-trim-right
+                    (thing-at-point 'line t))))
+        (forward-line -1))
 
-(defun simpc--indentation-of-previous-non-empty-line ()
-  (save-excursion
-    (forward-line -1)
-    (while (and (not (bobp))
-                (string-empty-p
-                 (string-trim-right
-                  (thing-at-point 'line t))))
-      (forward-line -1))
-    (current-indentation)))
+      (if (string-empty-p
+           (string-trim-right
+            (thing-at-point 'line t)))
+          ;; If after moving backwards for this long we still look at an empty
+          ;; line we by definition didn't find the previous non-empty line.
+          nil
+        ;; We found the previous non-empty line!
+        (cons (thing-at-point 'line t)
+              (current-indentation))))))
 
 (defun simpc--desired-indentation ()
-  (let* ((cur-line (string-trim-right (thing-at-point 'line t)))
-         (prev-line (string-trim-right (simpc--previous-non-empty-line)))
-         (indent-len 4)
-         (prev-indent (simpc--indentation-of-previous-non-empty-line)))
-    (cond
-     ((string-match-p "^\\s-*switch\\s-*(.+)" prev-line)
-      prev-indent)
-     ((and (string-suffix-p "{" prev-line)
-           (string-prefix-p "}" (string-trim-left cur-line)))
-      prev-indent)
-     ((string-suffix-p "{" prev-line)
-      (+ prev-indent indent-len))
-     ((string-prefix-p "}" (string-trim-left cur-line))
-      (max (- prev-indent indent-len) 0))
-     ((string-suffix-p ":" prev-line)
-      (if (string-suffix-p ":" cur-line)
-          prev-indent
-        (+ prev-indent indent-len)))
-     ((string-suffix-p ":" cur-line)
-      (max (- prev-indent indent-len) 0))
-     (t prev-indent))))
+  (let ((prev (simpc--previous-non-empty-line)))
+    (if (not prev)
+        (current-indentation)
+      (let ((indent-len 4)
+            (cur-line (string-trim-right (thing-at-point 'line t)))
+            (prev-line (string-trim-right (car prev)))
+            (prev-indent (cdr prev)))
+        (cond
+         ((string-match-p "^\\s-*switch\\s-*(.+)" prev-line)
+          prev-indent)
+         ((and (string-suffix-p "{" prev-line)
+               (string-prefix-p "}" (string-trim-left cur-line)))
+          prev-indent)
+         ((string-suffix-p "{" prev-line)
+          (+ prev-indent indent-len))
+         ((string-prefix-p "}" (string-trim-left cur-line))
+          (max (- prev-indent indent-len) 0))
+         ((string-suffix-p ":" prev-line)
+          (if (string-suffix-p ":" cur-line)
+              prev-indent
+            (+ prev-indent indent-len)))
+         ((string-suffix-p ":" cur-line)
+          (max (- prev-indent indent-len) 0))
+         (t prev-indent))))))
 
 ;;; TODO: customizable indentation (amount of spaces, tabs, etc)
 (defun simpc-indent-line ()
