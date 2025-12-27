@@ -59,10 +59,10 @@
       ;; the previous non-empty line.
       (forward-line -1)
       ;; Keep moving backwards until we hit BOB or a non-empty line.
-      (while (> (line-number-at-pos) 1)
+      (while (and (> (line-number-at-pos) 1)
                   (string-empty-p
                    (string-trim-right
-                    (thing-at-point 'line t)))
+                    (thing-at-point 'line t))))
         (forward-line -1))
 
       (if (string-empty-p
