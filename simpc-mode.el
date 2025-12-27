@@ -54,21 +54,15 @@
 (defun simpc--previous-non-empty-line ()
   "Returns either NIL when there is no such line or a pair (line . indentation)"
   (save-excursion
-    ;; If you are on the first line, but not at the beginning of buffer (BOB) the `(bobp)`
-    ;; function does not return `t`. So we have to move to the beginning of the line first.
-    ;; TODO: feel free to suggest a better approach for checking BOB here.
-    (move-beginning-of-line nil)
-    (if (bobp)
-        ;; If you are standing at the BOB, you by definition don't have a previous non-empty line.
-        nil
+    (when (> (line-number-at-pos) 1)
       ;; Moving one line backwards because the current line is by definition is not
       ;; the previous non-empty line.
       (forward-line -1)
       ;; Keep moving backwards until we hit BOB or a non-empty line.
-      (while (and (not (bobp))
+      (while (> (line-number-at-pos) 1)
                   (string-empty-p
                    (string-trim-right
-                    (thing-at-point 'line t))))
+                    (thing-at-point 'line t)))
         (forward-line -1))
 
       (if (string-empty-p
@@ -110,7 +104,7 @@
 ;;; TODO: customizable indentation (amount of spaces, tabs, etc)
 (defun simpc-indent-line ()
   (interactive)
-  (when (not (bobp))
+  (when (> (line-number-at-pos) 1)
     (let* ((desired-indentation
             (simpc--desired-indentation))
            (n (max (- (current-column) (current-indentation)) 0)))
