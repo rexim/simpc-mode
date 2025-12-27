@@ -26,8 +26,9 @@ Put [simpc-mode.el](./simpc-mode.el) to some folder `/path/to/simpc/`. Add this 
 (add-to-list 'load-path "/path/to/simpc/")
 ;; Importing simpc-mode
 (require 'simpc-mode)
-;; Automatically enabling simpc-mode on files with extensions like .h, .c, .cpp, .hpp
-(add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . simpc-mode))
+;; Automatically enabling simpc-mode on files with extensions like .h, .c, .cpp, .hpp ...
+(dolist (ext '(".c" ".h" ".C" ".H" ".cc" ".hh" ".cpp"  ".hpp" ".cxx" ".hxx"))
+  (add-to-list 'auto-mode-alist (cons (concat "\\" ext "\\'") 'simpc-mode)))
 ```
 
 ## Indentation
